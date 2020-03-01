@@ -1,15 +1,18 @@
 import numpy as np
-import cv2
+
+from cv2 import VideoCapture, destroyAllWindows, imshow
 import time
 
 class DoorbellCamera(object):
     '''
-    Only purpose is to fetch frames consecutively.
+    Purpose: Connects to camera hardware and begins fetching frames from the camera
+    TODOs:
+    - Add a connection retry function
     '''
     def __init__(self, cameraName, cameraNumber=0):
         self.cameraNumber = cameraNumber
         self.cameraName = cameraName
-        self.cameraFeed = cv2.VideoCapture(cameraNumber)
+        self.cameraFeed = VideoCapture(cameraNumber)
         self.previousFrame = None
         self.currentFrame = None
 
@@ -36,12 +39,10 @@ class DoorbellCamera(object):
             self.debugLogger('Error Reading Next Frame', 'getNextFrame()')
     
     def showCurrentFrame(self):
-        cv2.imshow(self.cameraName, self.currentFrame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            self.endCameraFeed()
+        imshow(self.cameraName, self.currentFrame)
 
     def endCameraFeed(self):
         self.debugLogger('Feed ending', 'endCameraFeed()')
         self.cameraFeed.release()
-        cv2.destroyAllWindows()
+        destroyAllWindows()
         exit()
